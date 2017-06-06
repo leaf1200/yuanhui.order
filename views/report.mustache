@@ -1,0 +1,111 @@
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>weui.js</title>
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.0/weui.min.css">
+    <script type="text/javascript" src="dist/example/example.js"></script>
+    <script type="text/javascript" src="dist/weui.min.js"></script>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+
+    <style>
+        html, body{
+            height: 100%;
+            background-color: #f8f8f8;
+        }
+        body{
+            font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
+        }
+        .item{
+            padding: 10px 0;
+        }
+        .item__title{
+            margin-bottom: 5px;
+            padding-left: 15px;
+            padding-right: 15px;
+            color: #999;
+            font-weight: normal;
+            font-size: 14px;
+        }
+        .item__ctn{
+            padding: 0 15px;
+        }
+        .page_feedback{
+            padding: 15px;
+            overflow: auto;
+            background-color: #FFFFFF;
+        }
+        /*fix fastclick很难点中的bug*/
+        label > * { pointer-events: none; }
+        /* weui需要fix的 */
+        .weui-picker__item{
+            padding: 0;
+            height: 34px;
+            line-height: 34px;
+        }
+    </style>
+</head>
+<body ontouchstart>
+<p id="bear"></p>
+<script>
+
+</script>
+<script type="text/javascript">
+// 点击日期组件确定事件
+ bindDateChange: function (e) {
+  this.setData({
+   date: e.detail.value
+  })
+ }
+</script>
+<input type="date" id='datetime-picker'/>
+<script>
+  var $ = require('jQuery');
+  $("#datetime-picker").datetimePicker();
+
+  weui.datePicker({
+    start:2016,      // 起始时间
+    end:2018,       // 结束时间
+    defaultValue: [2016,12,9],   // 文档说默认当前值、但tm没用啊。fuck~
+    onChange:function(result){
+        console.log(result);
+    },
+    onConfirm:function(result){
+        result[1]=result[1]+1;// 月份索引+1、否则比实际月份小一个月
+        console.log(result);
+    }
+});
+</script>
+
+<script>
+    $(function() {
+        $('#datepick').datepicker();
+    });
+</script>
+
+<a href=javascript:; id=datePickerBtn class="weui-btn weui-btn_default">DatePicker</a>
+
+
+
+<div class="weui-cells__title">分销统计报表</div>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <p>人员姓名</p>
+        </div>
+        <div class="weui-cell__ft">分销数量</div>
+    </div>
+    {{#result}}
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <p>{{_id}}</p>
+        </div>
+        <div class="weui-cell__ft">{{count}}</div>
+    </div>
+    {{/result}}
+</div>
+
+</body>
+</html>

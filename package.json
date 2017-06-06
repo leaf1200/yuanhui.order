@@ -1,0 +1,29 @@
+{
+  "name": "baby.weixin",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "axios": "^0.16.1",
+    "body-parser": "^1.17.1",
+    "cookie-parser": "^1.4.3",
+    "debug": "^2.6.3",
+    "express": "^4.15.2",
+    "hashmap": "^2.1.0",
+    "jQuery": "^1.7.4",
+    "lodash": "^4.17.4",
+    "md5": "^2.2.1",
+    "moment": "^2.18.1",
+    "mongoose": "^4.9.3",
+    "morgan": "^1.8.1",
+    "mustache-express": "^1.2.4",
+    "promise": "^7.1.1",
+    "serve-favicon": "^2.4.2",
+    "urlencode": "^1.1.0",
+    "wechat": "^2.1.0",
+    "wechat-api": "^1.32.0",
+    "weui": "^1.1.1"
+  }
+}

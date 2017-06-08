@@ -26,7 +26,6 @@ var wsendOrderSchema = new Schema({
       retcode:Number,
       openid:String,
       msg:String,
-      from:String,
       created: {
         type: String,
         default: () => {

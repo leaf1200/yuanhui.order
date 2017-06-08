@@ -49,9 +49,19 @@ var wOrderSchema = new Schema({
         outer_item_id:String,
         price:String,
         state_str:String,
-        total_fee:String
+        total_fee:String,
+        sku_properties_name:String
       }
     ],
+
+    fans_info:{
+      fans_nickname:String,
+      fans_id:Number,
+      fans_type:Number,
+      buyer_id:Number
+    },
+    outer_user_id:String,
+    app_id:String,
 
     title:String,
     buyer_message:String,

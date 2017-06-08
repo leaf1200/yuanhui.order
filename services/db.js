@@ -5,8 +5,8 @@ mongoose.Promise = Promise;
 // Build the connection string
 //var dbURI = 'mongodb://root:root@172.20.67.109:27060/babydate';
 
-var dbURI = 'mongodb://root:root@172.20.67.109:27060/yuanhui';
-
+//var dbURI = 'mongodb://root:shyr021191$@222.73.7.150:27017/babydate';
+var dbURI = 'mongodb://root:shyr021191$@127.0.0.1:27017/babydate';
 // Create the database connection
 mongoose.connect(dbURI);
 

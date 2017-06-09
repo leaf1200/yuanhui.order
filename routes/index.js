@@ -24,7 +24,6 @@ router.get('/getsave/:addrName', (req, res, next) => {
 });
 
 router.get('/getall', (req, res, next) => {
-    console.log('test');
     var reportSvc = new ReportSvc();
     reportSvc.getReportOpenId('all','all').then(function(result) {
           return  res.json(new Result(Errors.Success,result ));
@@ -46,6 +45,15 @@ router.post('/getorder', (req, res, next) => {
           return  res.json(result );
     }).catch(err => {
         return res.json(err);
+    });
+});
+
+router.get('/sendOrder', (req, res, next) => {
+    var reportSvc = new ReportSvc();
+    reportSvc.getOpenId().then(function(result) {
+          return  res.json(new Result(Errors.Success,result ));
+    }).catch(err => {
+        return res.json(new Result(Errors.DBQueryFailed, err));
     });
 });
 

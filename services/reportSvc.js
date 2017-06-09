@@ -150,10 +150,7 @@ ReportSvc.prototype.sendOrder = function(pInfo) {
       async.each(orders, (ts, callback) =>{//each order
        wProducts.findOne({skuid:ts.outer_sku_id}).then((sDoc) => {
 
-<<<<<<< HEAD
          
-=======
->>>>>>> origin/master
           if ( (sDoc == null) || (( msg.status.indexOf("WAIT_SELLER_SEND_GOODS")<0 ) && (msg.status.indexOf("TRADE_BUYER_SIGNED")<0) ) ) //WAIT_SELLER_SEND_GOODS TRADE_BUYER_SIGNED
           {
            callback();

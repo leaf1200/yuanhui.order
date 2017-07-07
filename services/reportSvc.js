@@ -18,21 +18,74 @@ var sdk = SDK({key: '759e2f7afdef69dcac', secret: 'f3fe09621d4b0b34763cbd2bcdc39
 var ReportSvc = function() {};
 
 
-ReportSvc.prototype.getProvinceCode = function( addrName ) {
+ReportSvc.prototype.getProvinceCode = function( addrState,addrCity,addrDistrict ) {
     return new Promise((resolve, reject) => {
         var ret = [];
-        if ( addrName.length() === 2 )
-          addrName = addrName+'市';
+        var spe_State = '上海市,北京市,天津市,重庆市,';
+
+        if ( spe_State.indexOf(addrState+',') >=0)
+        {
+           addrCity = addrDistrict;
+           addrDistrict = '';
+        }
+
+        var l1Id = l2Id = l3Id = l4Id = 0;
+
         wProvince.findOne({
-           Name:{ $regex:"^"+addrName+"?"}
+           Name:{ $regex:"^"+addrState},
+           LevelNum:1
          }).then((sDoc) => {
             if ( sDoc  != null )
-            return resolve({Id:sDoc.ID});
+            {
+              l1Id = sDoc.ID;
+              wProvince.findOne({
+                 Name:{ $regex:"^"+addrCity},
+                 LevelNum:2,
+                 ParentID:l1Id
+               }).then((cDoc) => {
+              if ( cDoc  != null )
+              {
+                l2Id = cDoc.ID;
+                wProvince.findOne({
+                   Name:{ $regex:"^"+addrDistrict},
+                   LevelNum:3,
+                   ParentID:l2Id
+                 }).then((dDoc) => {
+                   if ( dDoc  != null )
+                   {
+                     l3Id = dDoc.ID;
+                     wProvince.findOne({
+                        LevelNum:4,
+                        ParentID:l3Id
+                      }).then((countyDoc) => {
+                        if ( countyDoc  != null )
+                        {
+                           l4Id = countyDoc.ID;
+                           return resolve({l1:l1Id,l2:l2Id,l3:l3Id,l4:l4Id});
+                        }
+                        else
+                          return resolve({l1:l1Id,l2:l2Id,l3:l3Id,l4:l4Id});
+                      }).catch(err => {
+                        return resolve({l1:l1Id,l2:l2Id,l3:l3Id,l4:l4Id});
+                      });
+                   }
+                   else
+                    return resolve({l1:l1Id,l2:l2Id,l3:l3Id,l4:l4Id});
+                 }).catch(err => {
+                   return resolve({l1:l1Id,l2:l2Id,l3:l3Id,l4:l4Id});
+                 });
+              }
+              else
+               return resolve({l1:l1Id,l2:l2Id,l3:l3Id,l4:l4Id});
+            }).catch(err => {
+              return resolve({l1:l1Id,l2:l2Id,l3:l3Id,l4:l4Id});
+            });
+            }
             else {
-              return resolve({Id:0});
+              return resolve({l1:l1Id,l2:l2Id,l3:l3Id,l4:l4Id});
             }
           }).catch(err => {
-            return reject(err);
+            return resolve({l1:l1Id,l2:l2Id,l3:l3Id,l4:l4Id});
           });
     });
 };
@@ -142,15 +195,19 @@ ReportSvc.prototype.sendOrder = function(pInfo) {
      orders:orders
 
    }, {new: true,upsert:true}).then(data => {
-    var tParams = {name:msg.receiver_name,cell:msg.receiver_mobile,orderNo:orderNo,province:0,city:0,area:0,township:0,
+
+    this.getProvinceCode(msg.receiver_state,msg.receiver_city,msg.receiver_district).then( r_add => {
+
+    var tParams = {name:msg.receiver_name,cell:msg.receiver_mobile,orderNo:orderNo,province:r_add.l1,city:r_add.l2,area:r_add.l3,township:r_add.l4,
       address:msg.receiver_state+msg.receiver_city+msg.receiver_district+msg.receiver_address
     };
+
       var yhApi = new YuanHuiApi();
       //yhApi.getFans(msg.fans_info.fans_id).then(fans=>{ //get fans
       async.each(orders, (ts, callback) =>{//each order
        wProducts.findOne({skuid:ts.outer_sku_id}).then((sDoc) => {
 
-         
+
           if ( (sDoc == null) || (( msg.status.indexOf("WAIT_SELLER_SEND_GOODS")<0 ) && (msg.status.indexOf("TRADE_BUYER_SIGNED")<0) ) ) //WAIT_SELLER_SEND_GOODS TRADE_BUYER_SIGNED
           {
            callback();
@@ -257,7 +314,9 @@ ReportSvc.prototype.sendOrder = function(pInfo) {
         }, (err) => {//sync 6
           resolve({code:0,msg:"success"});
         });//sync6 //each order
-
+      }).catch(err => {
+        resolve({code:0,msg:"success"});
+      });
    }).catch(err => {
        resolve({code:0,msg:"success"});
    });
